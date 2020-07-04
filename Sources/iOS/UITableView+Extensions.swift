@@ -87,8 +87,14 @@ public extension UITableView {
     changesWithIndexPath: ChangeWithIndexPath,
     replacementAnimation: UITableView.RowAnimation) {
 
-    changesWithIndexPath.replaces.executeIfPresent {
-      reloadRows(at: $0, with: replacementAnimation)
+    changesWithIndexPath.replaces.executeIfPresent { rows in
+      if replacementAnimation == .none {
+        UIView.performWithoutAnimation {
+          reloadRows(at: rows, with: replacementAnimation)
+        }
+      } else {
+        reloadRows(at: rows, with: replacementAnimation)
+      }
     }
   }
 }
